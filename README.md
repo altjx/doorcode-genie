@@ -1,4 +1,4 @@
-# Automated Lock Management Script
+# Automated Door Lock Access Code Management
 
 ## Overview
 This script automates door code management for properties managed through OwnerRez, using Seam's API integration with door locks. It is designed to be run as a cron job to manage access codes for check-ins and check-outs seamlessly.
