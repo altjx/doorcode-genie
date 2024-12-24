@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  doorcode-genie:
+    build: .
+    image: doorcode-genie
+    container_name: doorcode-genie
+    environment:
+      - SEAM_API_KEY=${SEAM_API_KEY}
+      - PROPERTY_ID=${PROPERTY_ID}
+      - OWNERREZ_USERNAME=${OWNERREZ_USERNAME}
+      - OWNERREZ_API_TOKEN=${OWNERREZ_API_TOKEN}
+      - OWNERREZ_BASE_URL=${OWNERREZ_BASE_URL}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_FROM_NUMBER=${TWILIO_FROM_NUMBER}
+      - NOTIFICATION_PHONE_NUMBERS=${NOTIFICATION_PHONE_NUMBERS}
+    volumes:
+      - doorcode-genie-logs:/var/log
+    restart: unless-stopped
+
+volumes:
+  doorcode-genie-logs:
