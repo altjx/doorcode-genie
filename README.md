@@ -101,7 +101,7 @@ ruby script.rb
 ### Docker Logs
 To check the execution logs when using Docker, run:
 ```bash
-   docker logs doorcode-genie
+docker logs doorcode-genie
 ```
 
 ## References
