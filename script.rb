@@ -128,11 +128,11 @@ def process_bookings(bookings, current_time, seam, target_door_lock)
     if arrival_date == Date.today
       # Add code for arriving guests
       add_door_code(seam, target_door_lock, door_code, guest_name)
-      puts "Added door code for #{guest_name}"
+      puts "Added door code for #{guest_name}: #{door_code}"
     elsif departure_date == Date.today && current_time.hour >= DEPARTURE_TIME_THRESHOLD
       # Remove code for departing guests
       delete_door_code(seam, target_door_lock, guest_name)
-      puts "Deleted door code for #{guest_name}"
+      puts "Deleted door code for #{guest_name}: #{door_code}"
     end
   end
 end
