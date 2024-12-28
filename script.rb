@@ -10,7 +10,7 @@ SEAM_API_KEY = ENV['SEAM_API_KEY'] || '<my code here>'
 PROPERTY_ID = ENV['PROPERTY_ID'] || 123456
 OWNERREZ_USERNAME = ENV['OWNERREZ_USERNAME'] || '<your_username>'
 OWNERREZ_API_TOKEN = ENV['OWNERREZ_API_TOKEN'] || '<your_api_token>'
-OWNERREZ_BASE_URL = ENV['OWNERREZ_BASE_URL'] || 'https://api.ownerreservations.com/v2'
+OWNERREZ_BASE_URL = ENV['OWNERREZ_BASE_URL'] || 'https://api.ownerreservations.com'
 
 # Twilio credentials
 TWILIO_ACCOUNT_SID = ENV['TWILIO_ACCOUNT_SID'] || '<your_twilio_account_sid>'
@@ -43,15 +43,34 @@ end
 
 # Fetch bookings from OwnerRez
 def fetch_bookings
-  url = "#{OWNERREZ_BASE_URL}/bookings?property_ids=#{PROPERTY_ID}"
   auth = { username: OWNERREZ_USERNAME, password: OWNERREZ_API_TOKEN }
-  response = HTTParty.get(url, basic_auth: auth)
-  response.parsed_response['items']
+
+  all_items = []
+  next_page_url = nil
+
+  loop do
+    # Construct the full URL for the current request
+    current_url = next_page_url ? "#{OWNERREZ_BASE_URL}#{next_page_url}" : "#{OWNERREZ_BASE_URL}/v2/bookings?property_ids=#{PROPERTY_ID}"
+
+    response = HTTParty.get(current_url, basic_auth: auth)
+    parsed_response = response.parsed_response
+
+    items = parsed_response['items']
+    all_items.concat(items)
+
+    # Get the next_page_url from the response
+    next_page_url = parsed_response['next_page_url']
+
+    # Break the loop if there is no next_page_url
+    break unless next_page_url
+  end
+
+  all_items
 end
 
 # Fetch guest details
 def fetch_guest(guest_id)
-  url = "#{OWNERREZ_BASE_URL}/guests/#{guest_id}"
+  url = "#{OWNERREZ_BASE_URL}/v2/guests/#{guest_id}"
   auth = { username: OWNERREZ_USERNAME, password: OWNERREZ_API_TOKEN }
   response = HTTParty.get(url, basic_auth: auth)
   response.parsed_response
