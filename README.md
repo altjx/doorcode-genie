@@ -71,6 +71,7 @@ The following environment variables need to be set (via an `.env` file):
 2. Configure your `.env` file with the required environment variables:
    ```env
    SEAM_API_KEY=your_seam_api_key
+   SEAM_DOOR_LOCK_NAME="Front Door"
    PROPERTY_ID=123456
    OWNERREZ_USERNAME=your_username
    OWNERREZ_API_TOKEN=your_api_token
