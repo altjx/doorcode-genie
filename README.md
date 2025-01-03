@@ -18,7 +18,7 @@ The script was created as a solution for users who want to use door locks with O
 ## Configuration
 
 ### Required Environment Variables
-The following environment variables need to be set:
+The following environment variables need to be set (via an `.env` file):
 
 - `SEAM_API_KEY`: Your Seam API key.
 - `OWNERREZ_USERNAME`: Your OwnerRez username.
@@ -39,6 +39,7 @@ The following environment variables need to be set:
     lock.properties.august_metadata.house_name == '<Name of house configured for door lock>'
   end
   ```
+- Replace `getlocal('-05:00')` with your relevant time zone. This is to ensure that your code doesn't remove/add someone because of time zone differences in your code vs your property's time zone.
 
 ## Installation
 
