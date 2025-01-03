@@ -7,6 +7,7 @@ require 'twilio-ruby'
 
 # Configure Seam API key
 SEAM_API_KEY = ENV['SEAM_API_KEY'] || '<my code here>'
+SEAM_DOOR_LOCK_NAME = ENV['SEAM_DOOR_LOCK_NAME'] || 'Front Door'
 PROPERTY_ID = ENV['PROPERTY_ID'] || 123456
 OWNERREZ_USERNAME = ENV['OWNERREZ_USERNAME'] || '<your_username>'
 OWNERREZ_API_TOKEN = ENV['OWNERREZ_API_TOKEN'] || '<your_api_token>'
@@ -24,7 +25,7 @@ DEPARTURE_TIME_THRESHOLD = 16
 # Initialize Seam
 seam = Seam.new(api_key: SEAM_API_KEY)
 target_door_lock = seam.locks.list.find do |lock|
-  lock.properties.august_metadata.house_name == '<Name of house configured for door lock>'
+  lock.properties.august_metadata.house_name == SEAM_DOOR_LOCK_NAME
 end
 
 # Twilio client
@@ -36,7 +37,7 @@ def send_sms(message)
     @twilio_client.messages.create(
       from: TWILIO_FROM_NUMBER,
       to: number,
-      body: message
+      body: "[Doorcode Genie]: #{message}"
     )
   end
 end
@@ -107,9 +108,10 @@ end
 
 # Main processing
 bookings = fetch_bookings
-current_time = Time.now
+current_time = Time.now.getlocal('-05:00') # EST Time Zone
+current_date = current_time.to_date
 
-def process_bookings(bookings, current_time, seam, target_door_lock)
+def process_bookings(bookings, current_time, current_date, seam, target_door_lock)  
   bookings.each do |booking|
     arrival_date = Date.parse(booking['arrival'])
     departure_date = Date.parse(booking['departure'])
@@ -117,7 +119,7 @@ def process_bookings(bookings, current_time, seam, target_door_lock)
 
     # Skip if the arrival is not for today
     # Skip if the departure is for today but the current time is before 4 PM
-    unless arrival_date == Date.today || (departure_date == Date.today && current_time.hour >= DEPARTURE_TIME_THRESHOLD)
+    unless arrival_date == current_date || (departure_date == current_date && current_time.hour >= DEPARTURE_TIME_THRESHOLD)
       next
     end
 
@@ -137,4 +139,4 @@ def process_bookings(bookings, current_time, seam, target_door_lock)
   end
 end
 
-process_bookings(bookings, current_time, seam, target_door_lock)
+process_bookings(bookings, current_time, current_date, seam, target_door_lock)

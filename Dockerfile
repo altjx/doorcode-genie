@@ -21,9 +21,6 @@ COPY Gemfile ./
 # Install Ruby gems and generate Gemfile.lock
 RUN gem install bundler && bundle install
 
-# Copy the script and other necessary files
-COPY script.rb ./
-
 # Create a cron job to run the script every hour
 RUN echo "0 * * * * root ruby /app/script.rb >> /var/log/doorcode-genie.log 2>&1" > /etc/cron.d/doorcode-genie
 
